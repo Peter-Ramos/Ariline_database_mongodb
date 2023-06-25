@@ -2,6 +2,60 @@
 
 Το συγκεκριμένο project αφορά το εργαστήριο του μαθήματος **«(ΨΣ-152) Πληροφοριακά Συστήματα»** του τμήματος **Ψηφιακών Συστημάτων** του **Πανεπιστημίου Πειραιώς**.
 
+## Δομές των collection
+
+Στην βάση υπάρχουνε 3 collection: collUsers, collFlights, collReservations
+
+### 1. collUsers
+
+'''
+{
+\_id : type ObjectId
+username : type string
+name : type string
+surname : type string
+email : type string
+password : type string
+birthdate : type string
+country : type string
+passport : type string
+category : type string ("user" or "administrator")
+entered_system : type boolean
+}
+
+'''
+
+### 2. collFlights
+
+'''
+{
+'\_id' : type ObjectId
+'start_ariport' : type string
+'destination_airport' : type string
+'date' : type string
+'economy_seats' : type integer
+'economy_cost' : type float
+'business_seats' : type integer
+'business_cost' : type float
+}
+'''
+
+### 3. collReservations
+
+'''
+{
+'\_id' : type ObjectId
+'flight_id' : type string
+'name' : type string
+'surname' : type string
+'passport' : type string
+'email' : type string
+'class' : type string
+'birth_date' : type string
+}
+
+'''
+
 ## Λειτουργείες συστήματος
 
 ### 1. Sign up
@@ -19,6 +73,30 @@ data["entered_system"] = False
 
 ```
 collUsers.insert_one(data)
+```
+
+#### Παράδειγμα
+
+- χρήστης πει στο: `[POST] http://[URL]:5000/sign_up`
+- ειασάγει τα στιχεάα του
+
+```
+{
+  "username": "IlikeMangos",
+  "name": "peter",
+  "surname": "Ramos",
+  "email": "petrosramos@gmail.com",
+  "password": "1234567",
+  "birthdate": "08/08/2002",
+  "country": "Greece",
+  "passport": "123456789",
+}
+```
+
+- Η απάντηση του συστήματος είναι
+
+```
+peter was added to the database
 ```
 
 ### 2. Login
