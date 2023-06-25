@@ -8,7 +8,6 @@
 
 ### 1. collUsers
 
-'''
 {
 \_id : type ObjectId
 username : type string
@@ -23,11 +22,8 @@ category : type string ("user" or "administrator")
 entered_system : type boolean
 }
 
-'''
-
 ### 2. collFlights
 
-'''
 {
 '\_id' : type ObjectId
 'start_ariport' : type string
@@ -38,11 +34,9 @@ entered_system : type boolean
 'business_seats' : type integer
 'business_cost' : type float
 }
-'''
 
 ### 3. collReservations
 
-'''
 {
 '\_id' : type ObjectId
 'flight_id' : type string
@@ -53,8 +47,6 @@ entered_system : type boolean
 'class' : type string
 'birth_date' : type string
 }
-
-'''
 
 ## Λειτουργείες συστήματος
 
