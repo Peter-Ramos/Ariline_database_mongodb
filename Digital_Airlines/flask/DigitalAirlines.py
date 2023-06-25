@@ -17,7 +17,7 @@ db = client["DigitalAirlines"]
 collUsers = db["AirlineUserCollection"]
 collFlights = db["AirlineFlightsCollection"]
 collReservations = db["AirlineReservationsCollections"]
-
+    
 
 print("Database is running!")
 
@@ -75,7 +75,7 @@ def sign_up():
                 data["entered_system"] = False
                 collUsers.insert_one(data)
                 return Response(
-                    data["name"] + "was added to the database",
+                    data["name"] + " was added to the database",
                     status=200,
                     mimetype="application/json",
                 )
@@ -109,32 +109,26 @@ def login():
 
 @app.route("/logout", methods=["DELETE"])
 def logout():
-    if request.data:
-        try:
-            email = request.args.get("mail")
-            password = request.headers.get("Authorization")
-        except:
-            return Response(
-                "Incorect email or password", status=500, mimetype="application/json"
-            )
-
-        if not logedin_test(email, password):
-            return Response(
-                "User not loged in system", status=500, mimetype="application/json"
-            )
-
-        if collUsers.find_one({"email": email, "password": password}):
-            collUsers.update_one(
-                {"email": email, "password": password},
-                {"$set": {"entered_system": False}},
-            )
-            return Response(
-                email + "loged out of the system",
-                status=200,
-                mimetype="application/json",
-            )
-
-    return Response("bad json content", status=500, mimetype="application/json")
+    try:
+        email = request.args.get("mail")
+        password = request.headers.get("Authorization")
+    except:
+        return Response(
+            "Incorect email or password", status=500, mimetype="application/json"
+        )
+    if not logedin_test(email, password):
+        return Response(
+            "User not loged in system", status=500, mimetype="application/json"
+        )
+    collUsers.update_one(
+        {"email": email, "password": password},
+        {"$set": {"entered_system": False}},
+    )
+    return Response(
+        email + "loged out of the system",
+        status=200,
+        mimetype="application/json",
+    )
 
 
 @app.route("/search_flights", methods=["GET"])
@@ -246,7 +240,7 @@ def flight_information():
                 },
             )
         except:
-            return Response("Wrong input", status=500, mimetype="application/json")
+            return Response("bad json content", status=500, mimetype="application/json")
 
         if output:
             return Response(output, status=200, mimetype="application/json")
@@ -275,11 +269,6 @@ def flight_reservation():
         data = json.loads(request.data)
 
         try:
-            if not collUsers.find_one({"email": email}):
-                return Response(
-                    "Email does not exist", status=500, mimetype="application/json"
-                )
-
             if not collFlights.find_one({"_id": ObjectId(data["flight_id"])}):
                 return Response(
                     "Flight not found", status=500, mimetype="application/json"
@@ -349,7 +338,12 @@ def reservation_review():
         for things in collReservations.find({"email": email}, {"flight_id": 0}):
             things["_id"] = str(things["_id"])
             output.update(things)
-        return Response(output, status=200, mimetype="application/json")
+
+        if output:
+            return Response(output, status=200, mimetype="application/json")
+        return Response(
+            "No reservations found", status=200, mimetype="application/json"
+        )
     except:
         return Response("bad content", status=500, mimetype="application/json")
 
@@ -413,7 +407,7 @@ def reservation_delete():
             flight_info = collFlights.find_one(
                 {"_id": ObjectId(reservation_info["flight_id"])}
             )
-            # collReservations.delete_one({"_id": ObjectId(data["_id"])})
+            collReservations.delete_one({"_id": ObjectId(data["_id"])})
 
             if reservation_info["class"] == "economy":
                 collFlights.update_one(
@@ -448,13 +442,11 @@ def account_delete():
             "Incorect email or password", status=500, mimetype="application/json"
         )
 
-    if request.data:
-        try:
-            collUsers.delete_one({"email": email})
-            return Response("All went fine", status=200, mimetype="application/json")
-        except:
-            return Response("bad json content", status=500, mimetype="application/json")
-    return Response("bad json content", status=500, mimetype="application/json")
+    try:
+        collUsers.delete_one({"email": email})
+        return Response("All went fine", status=200, mimetype="application/json")
+    except:
+        return Response("bad json content", status=500, mimetype="application/json")
 
 
 # Administrator functions
@@ -512,8 +504,15 @@ def update_flight():
         )
 
     if request.data:
+        data = None
         try:
             data = json.loads(request.data)
+
+            if data == None:
+                return Response(
+                    "No information received", status=500, mimetype="application/json"
+                )
+
             if "economy_cost" in data:
                 ident = ObjectId(data["_id"])
                 collFlights.update_one(
@@ -552,7 +551,10 @@ def delete_flight():
         if collFlights.find_one({"_id": ObjectId(data["_id"])}):
             collFlights.delete_one({"_id": ObjectId(data["_id"])})
             return Response("Flight deleted", status=200, mimetype="application/json")
-    return Response("bad json content", status=500, mimetype="application/json")
+        return Response(
+            "flight not found content", status=500, mimetype="application/json"
+        )
+    return Response("bad request content", status=500, mimetype="application/json")
 
 
 @app.route("/details_flight", methods=["GET"])
@@ -597,7 +599,6 @@ def details_flight():
                         "birthdate": 0,
                     },  # need to find which not to print
                 ):
-                    print(i["class"])
                     if i["class"] == "business":
                         business_tickets += 1
                     else:
