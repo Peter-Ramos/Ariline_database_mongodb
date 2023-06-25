@@ -342,15 +342,15 @@ return Response("bad json content", status=500, mimetype="application/json")
 - Η απάντηση του συστήματος είναι
   -αν βρεθεί η πτήση
 
-```
-Reservation complete
-```
+    ```
+    Reservation complete
+    ```
 
     -αν δεν βρεθεί η πτήση
 
-```
-Flight not found
-```
+    ```
+    Flight not found
+    ```
 
 ### 7. Information about reservations
 
