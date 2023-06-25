@@ -156,7 +156,8 @@ if output:
     return Response(output, status=200, mimetype="application/json")
 ```
 
-###6. Flight reservation
+### 6. Flight reservation
+
 Η κράτηση πτήσης γίνεται στο ‘/search_flights’ μαζί με την χρήση ενός argument για το email
 λαμβάνεται το email από το argument και το password από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
 
@@ -223,7 +224,8 @@ collReservations.insert_one(
 return Response("bad json content", status=500, mimetype="application/json")
 ```
 
-###7. Information about reservations
+### 7. Information about reservations
+
 Η πληροφόρηση για τις κρατήσεις ‘/reservation_review μαζί με την χρήση ενός argument για το email
 λαμβάνεται το email από το argument και το password από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
 
@@ -249,7 +251,8 @@ for things in collReservations.find({"email": email}, {"flight_id": 0}):
     )
 ```
 
-###8. Ιnformation about a reservation
+### 8. Ιnformation about a reservation
+
 Η πληροφόρηση για μια κρατησή ‘/reservation_info μαζί με την χρήση ενός argument για το email
 λαμβάνεται το email από το argument και το password από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
 
@@ -283,7 +286,9 @@ reservation_info = collReservations.find_one(
 ```
 
 αν κάποιο από τα στοιχεία δεν είναι σωστά τότε στέλνει αντίστοιχο μήνυμα
-###9. Delete reservation
+
+### 9. Delete reservation
+
 Η διαγραφή μιας κράτησης γήνεται στο ‘/reservation_delete μαζί με την χρήση ενός argument για το email
 λαμβάνεται το email από το argument και τοpassword από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
 
@@ -308,23 +313,26 @@ collReservations.delete_one({"_id": ObjectId(data["_id"])})
 
 ακύρωση κράτησης σημαίνει ότι ο θα ελευθερωθεί μια θέση στο αεροπλάνο άρα αυξάνονται τα αντίστοιχα στοιχεία κατά ένα
 
-````
-    if reservation_info["class"] == "economy":
-        collFlights.update_one(
-            {"_id": ObjectId(reservation_info["flight_id"])},
-            {"$set": {"economy_seats": flight_in["economy_seats"] + 1}},
-        )
-    elif reservation_info["class"] == "business":
-        collFlights.update_one(
-            {"_id": ObjectId(reservation_info["flight_id"])},
-            {"$set": {"business_seats": flight_in["business_seats"] + 1}},
-        )
+```
+if reservation_info["class"] == "economy":
+    collFlights.update_one(
+        {"_id": ObjectId(reservation_info["flight_id"])},
+        {"$set": {"economy_seats": flight_in["economy_seats"] + 1}},
+    )
+elif reservation_info["class"] == "business":
+    collFlights.update_one(
+        {"_id": ObjectId(reservation_info["flight_id"])},
+        {"$set": {"business_seats": flight_in["business_seats"] + 1}},
+    )
 
-    ```
-###10. Delete account
+```
+
+### 10. Delete account
+
 Η διαγραφή μιας κράτησης γήνεται στο ‘/reservation_delete μαζί με την χρήση ενός argument για το email
 λαμβάνεται το email από το argument και τοpassword από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
-````
+
+```
 
 email = request.args.get("mail")
 password = request.headers.get("Authorization")
@@ -336,7 +344,9 @@ password = request.headers.get("Authorization")
 logedin_test(email, password)
 
 ```
+
 στην συνέχεια με βάση το email γίνεται διαγραφή του λογαριασμού
+
 ```
 
 try:
@@ -346,23 +356,30 @@ except:
 return Response("bad json content", status=500, mimetype="application/json")
 
 ```
-###11. Create a new flight
+
+### 11. Create a new flight
+
 Η δημιουργία νέου στοιχείου πτήσης γίνεται στο ‘/create_flight μαζί με την χρήση ενός argument για το email
 αφού είναι λειτουργία που επιτρέπεται να εκτελέσει μόνο ο χρήστης, πρέπει να γίνει αντίστοιχος έλεγχος
 λαμβάνεται το email από το argument και τοpassword από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
+
 ```
 
 email = request.args.get("mail")
 password = request.headers.get("Authorization")
 
 ```
+
 ο έλεγχος γίνεται από διαφορετικό function που ελέγχει αν ο χρήστης είναι administrator
+
 ```
 
 logedin_test_admin(email, password)
 
 ```
+
 στην συνέχεια παίρνει τα στοιχεία που έβαλε ο χρήστης και ελέγχει αν η ημερομηνία είναι σωστά γραμμένη και εισάγει τα στοιχεία
+
 ```
 
 data = json.loads(request.data)
@@ -386,24 +403,31 @@ collFlights.insert_one(
 )
 
 ```
-###12. Update flight information
-Η αλλαγή των στοιχείων μιας πτήσης γίνεται στο  ‘/update_flight' μαζί με την χρήση ενός argument για το email
+
+### 12. Update flight information
+
+Η αλλαγή των στοιχείων μιας πτήσης γίνεται στο ‘/update_flight' μαζί με την χρήση ενός argument για το email
 αφού είναι λειτουργία που επιτρέπεται να εκτελέσει μόνο ο χρήστης, πρέπει να γίνει αντίστοιχος έλεγχος
 λαμβάνεται το email από το argument και τοpassword από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
+
 ```
 
 email = request.args.get("mail")
 password = request.headers.get("Authorization")
 
 ```
+
 ο έλεγχος γίνεται από διαφορετικό function που ελέγχει αν ο χρήστης είναι administrator
+
 ```
 
 logedin_test_admin(email, password)
 
 ```
+
 τα στοιχεία που μπορεί να τροποποιήσει είναι τα κότσοι (economy class & business class). άρα παίρνει το id και τις κατηγορίες που θέλει να τροποποιήσει από τον χρήστη καιτα εισάγει στο σύστημα
 economy class:
+
 ```
 
 if "economy_cost" in data:
@@ -414,7 +438,9 @@ collFlights.update_one(
 )
 
 ```
+
 business class:
+
 ```
 
 if "business_cost" in data:
@@ -424,23 +450,30 @@ collFlights.update_one(
 )
 
 ```
-###13. Delete a flight
-Η διαγραφή μιας πτήσης γίνεται στο  '/delete_flight' μαζί με την χρήση ενός argument για το email
+
+### 13. Delete a flight
+
+Η διαγραφή μιας πτήσης γίνεται στο '/delete_flight' μαζί με την χρήση ενός argument για το email
 αφού είναι λειτουργία που επιτρέπεται να εκτελέσει μόνο ο χρήστης, πρέπει να γίνει αντίστοιχος έλεγχος
 λαμβάνεται το email από το argument και τοpassword από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
+
 ```
 
 email = request.args.get("mail")
 password = request.headers.get("Authorization")
 
 ```
+
 ο έλεγχος γίνεται από διαφορετικό function που ελέγχει αν ο χρήστης είναι administrator
+
 ```
 
 logedin_test_admin(email, password)
 
 ```
-Το σύστημα  παίρνει τα στοιχεία που έχει βάλει ο χρήστης. Ελέγχει αν υπάρχει πτήση με συγκεκριμένο id και αν υπάρχει τότε την διαγράφει
+
+Το σύστημα παίρνει τα στοιχεία που έχει βάλει ο χρήστης. Ελέγχει αν υπάρχει πτήση με συγκεκριμένο id και αν υπάρχει τότε την διαγράφει
+
 ```
 
 if request.data:
@@ -454,23 +487,29 @@ return Response(
 return Response("bad request content", status=500, mimetype="application/json")
 
 ```
+
 ###14. find extensive details about a flight
-Η αναζήτηση στοιχείων μιας πτήσης γίνεται στο  '/details_flight' μαζί με την χρήση ενός argument για το email
+Η αναζήτηση στοιχείων μιας πτήσης γίνεται στο '/details_flight' μαζί με την χρήση ενός argument για το email
 αφού είναι λειτουργία που επιτρέπεται να εκτελέσει μόνο ο χρήστης, πρέπει να γίνει αντίστοιχος έλεγχος
 λαμβάνεται το email από το argument και τοpassword από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
+
 ```
 
 email = request.args.get("mail")
 password = request.headers.get("Authorization")
 
 ```
+
 ο έλεγχος γίνεται από διαφορετικό function που ελέγχει αν ο χρήστης είναι administrator
+
 ```
 
 logedin_test_admin(email, password)
 
 ```
+
 στην συνέχεια παίρνει το Id που έχει βάλει ο χρήστης και αναζητά την πτήση
+
 ```
 
 flight_details = collFlights.find_one(
@@ -482,7 +521,9 @@ flight_details = collFlights.find_one(
 )
 
 ```
+
 υπολογίζει τις συνολικές ελεύθερες θέσεις που υπάρχουνε
+
 ```
 
 flight_details["free_seats"] = (
@@ -490,7 +531,9 @@ flight_details["business_seats"] +flight_details["economy_seats"]
 )
 
 ```
-και υπολογίζει πόσα economy και business tickets έχουνε αγοραστεί από το collection των κρατήσεων.  Επίσης εισάγει κάθε φορά και τα στοιχεία του κάθε χρήστη που έχει κάνειreservation
+
+και υπολογίζει πόσα economy και business tickets έχουνε αγοραστεί από το collection των κρατήσεων. Επίσης εισάγει κάθε φορά και τα στοιχεία του κάθε χρήστη που έχει κάνειreservation
+
 ```
 
 for i in collReservations.find(
@@ -510,7 +553,9 @@ economy_tickets += 1
 flight_reservations.update(i)
 
 ```
+
 Τέλος υπολογίζει τα στοιχεία τον θέσεων και τα εισάγει στο dictionary το οποίο στέλνεται ως response
+
 ```
 
 flight_details["all_seats"] = (
@@ -524,6 +569,8 @@ economy_tickets + flight_details["economy_seats"]
 )
 flight_details.update(flight_reservations)
 return Response(flight_details, status=200, mimetype="application/json")
+
+```
 
 ```
 
