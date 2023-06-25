@@ -111,6 +111,24 @@ collUsers.update_one(
 
 - Αν δεν τον βρει τότε γυρνάει αντίστοιχο μνήμα
 
+#### Παράδειγμα
+
+- χρήστης πει στο: `[POST] http://[URL]:5000/login’`
+- ειασάγει τα στιχεάα του
+
+```
+{
+    'passport' : "1234567",
+    'email' : "petrosramos@gmail.com"
+}
+```
+
+- Η απάντηση του συστήματος είναι
+
+```
+petrosramos@gmail.com entered the system
+```
+
 ### 3. Logout
 
 Η έξοδος από το σύστημα γίνεται στο ‘/logout’ και την χρήση ενός argument για το email
@@ -135,9 +153,20 @@ collUsers.update_one(
 ```
 
 - Αν δεν τον βρει τότε γυρνάει αντίστοιχο μνήμα
-  ###4. Search flights
-  Η αναζήτηση πτήσεων γίνεται στο ‘/search_flights’ μαζί με την χρήση ενός argument για το email
-  λαμβάνεται το email από το argument και το password από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
+
+#### Παράδειγμα
+
+- χρήστης πει στο: `[POST] http://[URL]:5000/logout?mail=petrosramos@gmail.com’`
+- Η απάντηση του συστήματος είναι
+
+```
+petrosramos@gmail.com loged out of the system
+```
+
+### 4. Search flights
+
+Η αναζήτηση πτήσεων γίνεται στο ‘/search_flights’ μαζί με την χρήση ενός argument για το email
+λαμβάνεται το email από το argument και το password από τον http header και ελέγχεται αν έχει γίνει login στο σύστημα από τον χρήστη
 
 ```
 email = request.args.get("mail")
@@ -292,6 +321,35 @@ collReservations.insert_one(
 
 ```
 return Response("bad json content", status=500, mimetype="application/json")
+```
+
+#### Παράδειγμα
+
+- χρήστης πει στο: `[POST] http://[URL]:5000/flight_reservation?mail=petrosramos@gmail.com’`
+- ειασάγει τα στιχεάα του
+
+```
+{
+    "flight_id": ObjectId of a flight,
+    "name": "Petros",
+    "surname": "Ramos",
+    "passport": "a0284b231",
+    "birthdate": "1-1-2000",
+    "class": "economy"
+}
+```
+
+- Η απάντηση του συστήματος είναι
+  -αν βρεθεί η πτήση
+
+```
+Reservation complete
+```
+
+    -αν δεν βρεθεί η πτήση
+
+```
+Flight not found
 ```
 
 ### 7. Information about reservations
